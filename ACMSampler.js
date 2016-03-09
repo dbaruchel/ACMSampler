@@ -147,7 +147,7 @@ if (Meteor.isClient) {
 
     this.playSound = (target) => {
       //Play the sound: play (src, interrupt, delay, offset, loop, volume, pan)
-      let instance = createjs.Sound.play(target.id);
+      let instance = createjs.Sound.play(target.id, {pan: 0.0001});
       if (instance === null ||
         instance.playState === createjs.Sound.PLAY_FAILED) {
         return;
@@ -229,7 +229,7 @@ if (Meteor.isClient) {
     $(window).on('keydown', (e) => {
       const aKeyCode = 65;
       // b=66, c =67...
-      if (aKeyCode + Sons.length - 1 < e.which) {
+      if (aKeyCode < e.which && e.which < aKeyCode + Sons.length - 1) {
         const sonIndex = e.which - aKeyCode;
         updateTouch(this.directionName, Sons[sonIndex].fileName);
         e.preventDefault();
