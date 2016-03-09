@@ -1,0 +1,36 @@
+<head>
+  <title>ACMSampler</title>
+</head>
+
+<body>
+</body>
+
+<!-- PAGE COEUR -->
+<template name="coeur">
+  {{#each directions}}
+    <div class="direction-container">
+      <!-- on appelle le template ci dessous -->
+      {{>direction name=this}}
+    </div>
+  {{/each}}
+</template>
+
+<template name="direction">
+  <div class="direction-name">{{name}}</div>
+  <div class="direction-number">{{touchOccurences}}</div>
+  <div class="direction-son-courant">{{sonCourant}}</div>
+</template>
+
+<!-- PAGE VERS -->
+<template name="vers">
+  {{#each sons}}
+    <div class="son-container">
+      <!-- on appelle le template ci dessous -->
+      {{>sonTemplate son=this directionName=directionName}}
+    </div>
+  {{/each}}
+</template>
+
+<template name="sonTemplate">
+  <div class="son-name">{{son.fileName}}</div>
+</template>
