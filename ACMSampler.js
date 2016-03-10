@@ -5,7 +5,7 @@ Touches = new Mongo.Collection('touches');
 
 //Definition des directions: URL des pages 'vers'
 //La c'est pour 4 joueurs, mais ca pourrait etre plus...
-Directions = ['est', 'nord', 'ouest', 'sud'];
+Directions = ['est', 'sud', 'ouest', 'nord'];
 const directionAlpha = Math.PI * 2 / Directions.length;
 
 //Definition des sons
@@ -102,6 +102,7 @@ if (Meteor.isServer) {
         name: direction,
         currentTouch: null,
         touchOccurences: 0,
+        isPlaying: false,
       });
     });
   });
@@ -179,6 +180,7 @@ if (Meteor.isClient) {
       if (soundPlaying) {
         this.soundInstance.stop();
       }
+
       //Playing with the pan and volume
       const soundOptions = {
         // east right, west left
@@ -194,7 +196,22 @@ if (Meteor.isClient) {
         return;
       }
 
-      this.soundInstance.addEventListener('complete', function(instance) {
+      //saying the touch of the direction is playing
+      const touchId = Touches.findOne({
+        name: Template.currentData().name,
+      })._id;
+      Touches.update({_id: touchId}, {
+        $set: {touchPlaying: true},
+      });
+
+      this.soundInstance.addEventListener('complete', (instance) => {
+        //reporting back that the play is over
+        const touchId = Touches.findOne({
+          name: this.data.name,
+        })._id;
+        Touches.update({_id: touchId}, {
+          $set: {touchPlaying: false},
+        });
         console.log('finished playing');
       });
     };
@@ -212,16 +229,22 @@ if (Meteor.isClient) {
       const temp = Template.instance();
       if (temp.touchOccurences === null) temp.touchOccurences = 0;
 
-      let currentTouch = Touches.findOne({name: this.name});
+      const currentTouch = Touches.findOne({name: this.name}, {fields: {
+        touchOccurences: 1,
+        currentTouch: 1,
+      }});
+
       let touchOccurences = currentTouch.touchOccurences;
 
       //PLAY SOUND
       //Si l'occurence a bien change au reloading du helper
+      //et pas a une autre reactivite
       //Du coup on joue le son qui correspond a la touche jouee
       if (touchOccurences !== temp.touchOccurences) {
         const soundToPlayForThisTouch = _.find(SonsObjects,
           (obj) => obj.fileName === currentTouch.currentTouch);
         temp.playSound(soundToPlayForThisTouch);
+        temp.touchOccurences = touchOccurences;
       }
       return touchOccurences;
     },
@@ -266,6 +289,14 @@ if (Meteor.isClient) {
   Template.vers.helpers({
     'sons': () => Sons,
     'directionName': () => Template.instance().directionName,
+    'sonImage': function() {
+      const sonCourant = Touches.findOne({
+        name: Template.instance().directionName})
+        .currentTouch;
+      const son = _.find(Sons,
+        (obj) => obj.fileName === sonCourant);
+      return son ? son.image : '';
+    },
   });
 
 
@@ -302,6 +333,14 @@ if (Meteor.isClient) {
   Template.sonTemplate.events({
     'click .son-name': function(event, template) {
       updateTouch(this.directionName, this.son.fileName);
+    },
+  });
+
+  Template.sonTemplate.helpers({
+    'isPlaying': function() {
+      const touch = Touches.findOne({name: this.directionName});
+      return touch.currentTouch === this.son.fileName
+        && touch.touchPlaying;
     },
   });
 }

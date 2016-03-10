@@ -33,8 +33,14 @@
       {{>sonTemplate son=this directionName=directionName}}
     </div>
   {{/each}}
+  <div style="width: 100px; display: block; margin-left: auto; margin-right: auto;">
+    <img style="width: 100%;" class="vers-son-image" src="{{sonImage}}">
+  </div>
 </template>
 
 <template name="sonTemplate">
   <div class="son-name">{{son.fileName}}</div>
+  {{#if isPlaying}}
+    <img style="width: 50px" src='/icons/play.png'>
+  {{/if}}
 </template>
