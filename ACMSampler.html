@@ -9,8 +9,9 @@
 <template name="coeur">
   {{#each directions}}
     <div class="direction-container">
+    <div>{{index}}</div>
       <!-- on appelle le template ci dessous -->
-      {{>direction name=this}}
+      {{>direction name=this.name index=this.index}}
     </div>
   {{/each}}
 </template>

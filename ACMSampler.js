@@ -6,6 +6,7 @@ Touches = new Mongo.Collection('touches');
 //Definition des directions: URL des pages 'vers'
 //La c'est pour 4 joueurs, mais ca pourrait etre plus...
 Directions = ['est', 'nord', 'ouest', 'sud'];
+const directionAlpha = Math.PI * 2 / Directions.length;
 
 //Definition des sons
 //Peut etre augmentee, diminuee, changee...
@@ -38,6 +39,7 @@ Sons = [
     fileName: 'ACM9_echappee',
   },
 ];
+const sonAlpha = Math.PI * 2 / Sons.length;
 const sonExtension = 'm4a';
 
 // Format necessite par la library Sound de createJS
@@ -92,7 +94,9 @@ if (Meteor.isServer) {
 if (Meteor.isClient) {
   //Donnee accessible au coeur
   Template.coeur.helpers({
-    'directions': () => Directions,
+    'directions': () => _.map(Directions, (dir, idx) => {
+      return {name: dir, index: idx};
+    }),
   });
 
 
@@ -100,15 +104,14 @@ if (Meteor.isClient) {
     // On se positionne en cercle pour se la peter
     // http://stackoverflow.com/questions/8436187/circular-layout-of-html-elements
     const directionsElems = this.$('.direction-container');
-    const alpha = Math.PI * 2 / Directions.length;
     const x0 = window.innerWidth / 2;
     const y0 = window.innerHeight / 2;
     const xRadius = 0.75 * window.innerWidth / 2;
     const yRadius = 0.75 * window.innerHeight / 2;
 
     directionsElems.each(function(index, elem) {
-      const x = x0 + xRadius * Math.cos(alpha * index);
-      const y = y0 + yRadius * Math.sin(alpha * index);
+      const x = x0 + xRadius * Math.cos(directionAlpha * index);
+      const y = y0 + yRadius * Math.sin(directionAlpha * index);
 
       elem.style.position = 'absolute';
       elem.style['text-align'] = 'center';
@@ -151,8 +154,16 @@ if (Meteor.isClient) {
     };
 
     this.playSound = (target) => {
+      //Playing with the pan and volume
+      const soundOptions = {
+        // east right, west left
+        pan: 0.0001 + Math.cos(directionAlpha * this.data.index),
+        // south loudest, north lowest
+        volume: 0.6 - 0.4 * Math.sin(directionAlpha * this.data.index),
+      };
+
       //Play the sound: play (src, interrupt, delay, offset, loop, volume, pan)
-      let instance = createjs.Sound.play(target.id, {pan: 0.0001});
+      let instance = createjs.Sound.play(target.id, soundOptions);
       if (instance === null ||
         instance.playState === createjs.Sound.PLAY_FAILED) {
         return;
@@ -199,6 +210,7 @@ if (Meteor.isClient) {
 
 //=========PAGES VERS
 if (Meteor.isClient) {
+  //Send the touch event to coeur
   const updateTouch = (directionName, fileName) => {
     const touchId = Touches.findOne({name: directionName})._id;
     Touches.update({_id: touchId}, {
@@ -220,26 +232,28 @@ if (Meteor.isClient) {
   Template.vers.rendered = function() {
     // On se positionne toujours en cercle pour se la peter
     const directionsElems = this.$('.son-container');
-    const alpha = Math.PI * 2 / Sons.length;
     const x0 = window.innerWidth / 2;
     const y0 = window.innerHeight / 2;
     const xRadius = 0.75 * window.innerWidth / 2;
     const yRadius = 0.75 * window.innerHeight / 2;
 
     directionsElems.each(function(index, elem) {
-      const x = x0 + xRadius * Math.cos(alpha * index);
-      const y = y0 + yRadius * Math.sin(alpha * index);
+      const x = x0 + xRadius * Math.cos(sonAlpha * index);
+      const y = y0 + yRadius * Math.sin(sonAlpha * index);
       elem.style.position = 'absolute';
       elem.style['text-align'] = 'center';
       elem.style.left = `${x}px`;
       elem.style.top = `${y}px`;
     });
 
+    // Yes, you can play with a,b,c,d,e... depending of the number of sounds !
     $(window).on('keydown', (e) => {
       const aKeyCode = 65;
+      const keyPressedCode = e.which;
       // b=66, c =67...
-      if (aKeyCode < e.which && e.which < aKeyCode + Sons.length - 1) {
-        const sonIndex = e.which - aKeyCode;
+      if (aKeyCode < keyPressedCode
+        && keyPressedCode < aKeyCode + Sons.length - 1) {
+        const sonIndex = keyPressedCode - aKeyCode;
         updateTouch(this.directionName, Sons[sonIndex].fileName);
         e.preventDefault();
       }
