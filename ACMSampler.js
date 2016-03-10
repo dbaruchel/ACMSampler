@@ -13,30 +13,48 @@ const directionAlpha = Math.PI * 2 / Directions.length;
 Sons = [
   {
     fileName: 'ACM1_full',
+    htmlText: '<b>C’est la vie qui resonne d’un mur a l’autre</b>',
+    image: '/images/ACM1.jpg',
   },
   {
     fileName: 'ACM2_trou',
+    htmlText: '<i>de caches pour ne pas dire de trous</i>',
+    image: '/images/ACM1.jpg',
   },
   {
     fileName: 'ACM3_ciel',
+    htmlText: '<span style="color: green;">Ciel Vert Safran</span>',
+    image: '/images/ACM1.jpg',
   },
   {
     fileName: 'ACM4_suinte_x',
+    htmlText: '<span style="color: blue;">Suinte etc...</span>',
+    image: '/images/ACM1.jpg',
   },
   {
     fileName: 'ACM5_tatonne',
+    htmlText: '<span style="color: yellow;">Ta tonne ! Gros fat</span>',
+    image: '/images/ACM1.jpg',
   },
   {
     fileName: 'ACM6_hivers',
+    htmlText: '<span style="color: purple;">hivers doux clame. Clame clam ? Blouboup</span>',
+    image: '/images/ACM1.jpg',
   },
   {
     fileName: 'ACM7_passage',
+    htmlText: '<span style="color: grey;">Moliere trebuche</span>',
+    image: '/images/ACM1.jpg',
   },
   {
     fileName: 'ACM8_reperes',
+    htmlText: '<span style="color: orange;">paires</span>',
+    image: '/images/ACM1.jpg',
   },
   {
     fileName: 'ACM9_echappee',
+    htmlText: '<span style="color: red;">Hey</span> chat prout',
+    image: '/images/ACM1.jpg',
   },
 ];
 const sonAlpha = Math.PI * 2 / Sons.length;
@@ -210,9 +228,23 @@ if (Meteor.isClient) {
       return touchOccurences;
     },
     'sonCourant': function() {
-      let sonCourant = Touches.findOne({name: this.name})
+      const sonCourant = Touches.findOne({name: this.name})
         .currentTouch;
       return sonCourant;
+    },
+    'sonHtmlText': function() {
+      const sonCourant = Touches.findOne({name: this.name})
+        .currentTouch;
+      const son = _.find(Sons,
+        (obj) => obj.fileName === sonCourant);
+      return son ? son.htmlText : '';
+    },
+    'sonImage': function() {
+      const sonCourant = Touches.findOne({name: this.name})
+        .currentTouch;
+      const son = _.find(Sons,
+        (obj) => obj.fileName === sonCourant);
+      return son ? son.image : '';
     },
   });
 }
