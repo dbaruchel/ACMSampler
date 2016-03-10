@@ -19,42 +19,42 @@ Sons = [
   {
     fileName: 'ACM2_trou',
     htmlText: '<i>de caches pour ne pas dire de trous</i>',
-    image: '/images/ACM1.jpg',
+    image: '/images/ACM2.jpg',
   },
   {
     fileName: 'ACM3_ciel',
     htmlText: '<span style="color: green;">Ciel Vert Safran</span>',
-    image: '/images/ACM1.jpg',
+    image: '/images/ACM3.jpg',
   },
   {
     fileName: 'ACM4_suinte_x',
     htmlText: '<span style="color: blue;">Suinte etc...</span>',
-    image: '/images/ACM1.jpg',
+    image: '/images/ACM4.jpg',
   },
   {
     fileName: 'ACM5_tatonne',
     htmlText: '<span style="color: yellow;">Ta tonne ! Gros fat</span>',
-    image: '/images/ACM1.jpg',
+    image: '/images/ACM5.jpg',
   },
   {
     fileName: 'ACM6_hivers',
     htmlText: '<span style="color: purple;">hivers doux clame. Clame clam ? Blouboup</span>',
-    image: '/images/ACM1.jpg',
+    image: '/images/ACM6.jpg',
   },
   {
     fileName: 'ACM7_passage',
     htmlText: '<span style="color: grey;">Moliere trebuche</span>',
-    image: '/images/ACM1.jpg',
+    image: '/images/ACM7.jpg',
   },
   {
     fileName: 'ACM8_reperes',
     htmlText: '<span style="color: orange;">paires</span>',
-    image: '/images/ACM1.jpg',
+    image: '/images/ACM8.jpg',
   },
   {
     fileName: 'ACM9_echappee',
     htmlText: '<span style="color: red;">Hey</span> chat prout',
-    image: '/images/ACM1.jpg',
+    image: '/images/ACM9.jpg',
   },
 ];
 const sonAlpha = Math.PI * 2 / Sons.length;
@@ -131,8 +131,6 @@ if (Meteor.isClient) {
       const x = x0 + xRadius * Math.cos(directionAlpha * index);
       const y = y0 + yRadius * Math.sin(directionAlpha * index);
 
-      elem.style.position = 'absolute';
-      elem.style['text-align'] = 'center';
       elem.style.left = `${x}px`;
       elem.style.top = `${y}px`;
     });
@@ -282,8 +280,6 @@ if (Meteor.isClient) {
     directionsElems.each(function(index, elem) {
       const x = x0 + xRadius * Math.cos(sonAlpha * index);
       const y = y0 + yRadius * Math.sin(sonAlpha * index);
-      elem.style.position = 'absolute';
-      elem.style['text-align'] = 'center';
       elem.style.left = `${x}px`;
       elem.style.top = `${y}px`;
     });

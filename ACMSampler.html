@@ -8,7 +8,7 @@
 <!-- PAGE COEUR -->
 <template name="coeur">
   {{#each directions}}
-    <div class="direction-container">
+    <div class="direction-container" style="position:absolute; text-align:center;">
       <!-- on appelle le template ci dessous -->
       {{>direction name=this.name index=this.index}}
     </div>
@@ -20,7 +20,7 @@
   <div class="direction-number" style="display:none;">{{touchOccurences}}</div>
   <!-- <div class="direction-son-courant">{{sonCourant}}</div> -->
   <div class="direction-son-htmlText">{{{sonHtmlText}}}</div>
-  <div style="width: 200px">
+  <div style="width: 100px; display: block; margin-left: auto; margin-right: auto;">
     <img style="width: 100%;" class="direction-son-image" src="{{sonImage}}">
   </div>
 </template>
@@ -28,7 +28,7 @@
 <!-- PAGE VERS -->
 <template name="vers">
   {{#each sons}}
-    <div class="son-container">
+    <div class="son-container" style="position:absolute; text-align:center;">
       <!-- on appelle le template ci dessous -->
       {{>sonTemplate son=this directionName=directionName}}
     </div>
