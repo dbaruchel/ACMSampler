@@ -1,12 +1,14 @@
-/*global Touches: true, Directions: true, Sons: true, SonsObjects: true, createjs */
+/* global Touches: true, Directions: true, Sons: true, SonsObjects: true, createjs */
 
 // Collection pour communiquer les touches tapees
 Touches = new Mongo.Collection('touches');
 
 //Definition des directions: URL des pages 'vers'
-Directions = ['ouest', 'nord', 'est', 'sud'];
+//La c'est pour 4 joueurs, mais ca pourrait etre plus...
+Directions = ['est', 'nord', 'ouest', 'sud'];
 
 //Definition des sons
+//Peut etre augmentee, diminuee, changee...
 Sons = [
   {
     fileName: 'ACM1_full',
@@ -27,7 +29,7 @@ Sons = [
     fileName: 'ACM6_hivers',
   },
   {
-    fileName: 'ACM7_passages',
+    fileName: 'ACM7_passage',
   },
   {
     fileName: 'ACM8_reperes',
@@ -38,6 +40,9 @@ Sons = [
 ];
 const sonExtension = 'm4a';
 
+// Format necessite par la library Sound de createJS
+// CF http://www.createjs.com/demos/soundjs/playonclick
+// et https://github.com/CreateJS/SoundJS/blob/master/examples/02_PlayOnClick.html
 SonsObjects = Sons.map((son, idx) => {
   return {
     fileName: son.fileName,
@@ -45,8 +50,6 @@ SonsObjects = Sons.map((son, idx) => {
     id: idx,
   };
 });
-
-
 
 if (Meteor.isClient) {
   //Visualisation et ecoute
@@ -106,11 +109,13 @@ if (Meteor.isClient) {
     directionsElems.each(function(index, elem) {
       const x = x0 + xRadius * Math.cos(alpha * index);
       const y = y0 + yRadius * Math.sin(alpha * index);
+
       elem.style.position = 'absolute';
       elem.style['text-align'] = 'center';
       elem.style.left = `${x}px`;
       elem.style.top = `${y}px`;
     });
+
     // On Load les sons avec createJS
     // https://github.com/CreateJS/SoundJS/blob/master/examples/02_PlayOnClick.html
     const soundLoaded = function(event) {
@@ -174,9 +179,13 @@ if (Meteor.isClient) {
       let currentTouch = Touches.findOne({name: this.name});
       let touchOccurences = currentTouch.touchOccurences;
 
+      //PLAY SOUND
+      //Si l'occurence a bien change au reloading du helper
+      //Du coup on joue le son qui correspond a la touche jouee
       if (touchOccurences !== temp.touchOccurences) {
-        temp.playSound(_.find(SonsObjects,
-          (obj) => obj.fileName === currentTouch.currentTouch));
+        const soundToPlayForThisTouch = _.find(SonsObjects,
+          (obj) => obj.fileName === currentTouch.currentTouch);
+        temp.playSound(soundToPlayForThisTouch);
       }
       return touchOccurences;
     },
