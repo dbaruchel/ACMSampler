@@ -14,7 +14,7 @@ Each other direction of the form /vers/<direction> such as /vers/nord at the top
 # Features
 __All the easy to modify code for customisation is at the beginning of ACMSampler.js__
 
-__Use inline style or .css to modify ACMSampler.html Beware of breaking functionalities if you start removing template helpers or changing html blocks ! Always verify__
+__Use inline style or .css to modify ACMSampler.html Beware of breaking functionalities if you start removing template helpers or changing html blocks ! Always verify things still work (sound in particular) if you start messing with the HTML directly ;P__
 
 * Nombreux passages Au Coeur du Marais: You can have as many directions as you want. Just change the Directions Array line 8. For example you could have `['est', 'sud-est', 'sud', 'ouest', 'nord-ouest', 'nord']` instead, if you were 6 players.
 * Tant de caches pour ne pas dire de fous: You can have as many sounds as you want. Just try to make them in .m4a, and add them to /public (where are the previous ones), and add a corresponding line to the Sons Array at the beginning of ACMSampler.js.
