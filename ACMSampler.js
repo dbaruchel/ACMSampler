@@ -146,14 +146,23 @@ if (Meteor.isClient) {
 
     //Sound player state
     this.preload = null;
-    this.stop = () => {
+    this.soundInstance = null;
+
+    //not used ?
+    this.stopAll = () => {
       if (this.preload !== null) {
         this.preload.close();
       }
       createjs.Sound.stop();
     };
-
     this.playSound = (target) => {
+      //We do not allow several sounds by
+      const soundPlaying = !(this.soundInstance === null
+        || this.soundInstance.playState === createjs.Sound.PLAY_FINISHED
+        || this.soundInstance.playState === createjs.Sound.PLAY_FAILED);
+      if (soundPlaying) {
+        this.soundInstance.stop();
+      }
       //Playing with the pan and volume
       const soundOptions = {
         // east right, west left
@@ -163,13 +172,13 @@ if (Meteor.isClient) {
       };
 
       //Play the sound: play (src, interrupt, delay, offset, loop, volume, pan)
-      let instance = createjs.Sound.play(target.id, soundOptions);
-      if (instance === null ||
-        instance.playState === createjs.Sound.PLAY_FAILED) {
+      this.soundInstance = createjs.Sound.play(target.id, soundOptions);
+      if (this.soundInstance === null ||
+        this.soundInstance.playState === createjs.Sound.PLAY_FAILED) {
         return;
       }
 
-      instance.addEventListener('complete', function(instance) {
+      this.soundInstance.addEventListener('complete', function(instance) {
         console.log('finished playing');
       });
     };
@@ -220,6 +229,7 @@ if (Meteor.isClient) {
   };
 
   Template.vers.created = function() {
+    //extracting the direction name from the route url
     this.directionName = Router.current().params.directionName;
   };
 
