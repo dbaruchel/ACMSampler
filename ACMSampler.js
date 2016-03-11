@@ -184,9 +184,9 @@ if (Meteor.isClient) {
       //Playing with the pan and volume
       const soundOptions = {
         // east right, west left
-        pan: 0.0001 + Math.cos(directionAlpha * this.data.index),
+        pan: 0.0001 - Math.cos(directionAlpha * this.data.index),
         // south loudest, north lowest
-        volume: 0.6 - 0.4 * Math.sin(directionAlpha * this.data.index),
+        volume: 0.6 + 0.4 * Math.sin(directionAlpha * this.data.index),
       };
 
       //Play the sound: play (src, interrupt, delay, offset, loop, volume, pan)
