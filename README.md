@@ -19,8 +19,10 @@ __Use inline style or .css to modify ACMSampler.html Beware of breaking function
 * __Nombreux passages Au Coeur du Marais__ - You can have as many directions as you want. Just change the Directions Array line 8. For example you could have `['est', 'sud-est', 'sud', 'ouest', 'nord-ouest', 'nord']` instead, if you were 6 players.
 * __Tant de caches pour ne pas dire de fous__ - You can have as many sounds as you want. Just try to make them in .m4a, and add them to /public (where are the previous ones), and add a corresponding line to the Sons Array at the beginning of ACMSampler.js.
 * __A l'étroit entre les pierres__ - Only one sound can be played by each direction at a time, but different directions can play at the same time.
-* __C'est la Vie qui Résonne__ - An image can be associated with each sound (some sample images are provided here). See the Sons Array at the beginning of ACMSampler.js, and the /public/images folder.
-* __et Tatonne__ - A html snippet can be associated with each sound. See the Sons Array at the beginning of ACMSampler.js. `htmlText: 'blablabla...'` 
+
+* __C'est la Vie qui Résonne.__ - An image can be associated with each sound (some sample images are provided here). See the Sons Array at the beginning of ACMSampler.js, and the /public/images folder.
+* __Elle tatonne.__ - Each /vers/ controller can be directed with keyboard touches: press a - b - c... (depends on how mnay sounds you have) to play sounds directly
+* __S'échapper une lueur verte__ - A html snippet can be associated with each sound. See the Sons Array at the beginning of ACMSampler.js. `htmlText: 'blablabla...'` 
 * __le Sacré Coeur Veille mes oreilles__ - South is closest (louder sound), West is the most panned to left, North is farthest (lower sound), East is the most panned to the right.
 * __Repère de fuyard__ - /vers/<direction> controllers pages have local feedback of the sound played
 
