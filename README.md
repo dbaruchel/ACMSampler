@@ -14,7 +14,7 @@ Each other direction of the form /vers/<direction> such as /vers/nord at the top
 # Features
 __All the easy to modify code, for customisation is at the beginning of ACMSampler.js__
 
-__You won't have difficulty knowing which assets (in /public) are samples and which ones are original parts of ACM ;p__
+__You won't have difficulty knowing which assets (in /public) are placeholders and which ones are original parts of ACM ;p__
 
 __Use inline style or .css to modify ACMSampler.html Beware of breaking functionalities if you start removing template helpers or changing html blocks ! Always verify things still work (sound in particular) if you start messing with the HTML directly ;P__
 
