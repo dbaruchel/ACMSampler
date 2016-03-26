@@ -86,6 +86,7 @@ SonsObjects = Sons.map((son, idx) => {
     fileName: son.fileName,
     src: `${son.fileName}.${sonExtension}`,
     id: idx,
+    goodDirection: son.goodDirection,
   };
 });
 
@@ -94,6 +95,7 @@ OtherSoundsObjects = OtherSounds.map((son, idx) => {
     fileName: son.fileName,
     src: `${son.fileName}.${sonExtension}`,
     id: idx + Sons.length,
+    goodDirection: son.goodDirection,
   };
 });
 
@@ -147,10 +149,30 @@ if (Meteor.isClient) {
       return {name: dir, index: idx};
     }),
     'hasWon': () => {
-      return _.every(Sons, function(son) {
+      const templ = Template.instance();
+      const hasWon = _.every(Sons, function(son) {
         return son.fileName === Touches.findOne({name: son.goodDirection}).currentTouch;
       });
-      // return true;
+
+      if (hasWon && hasWon !== templ.previousHasWon) {
+        console.log('FIRST WON');
+        //Play the final coeur sound
+        
+        Meteor.defer(function() {
+          templ.coeurSound = createjs.Sound.play(
+            _.find(OtherSoundsObjects, son => son.goodDirection === 'coeur').id, {
+              pan: 0.0001,
+              volume: 1,
+            });
+          if (templ.coeurSound === null ||
+            templ.coeurSound.playState === createjs.Sound.PLAY_FAILED) {
+            return;
+          }
+        });
+      }
+
+      templ.previousHasWon = hasWon;
+      return hasWon;
     },
     'coeurImage': () => {
       return _.find(OtherSounds, son => son.goodDirection === 'coeur').image;
@@ -291,20 +313,20 @@ if (Meteor.isClient) {
       return touchOccurences;
     },
     'sonCourant': function() {
-      const sonCourant = Touches.findOne({name: this.name})
-        .currentTouch;
+      const thisDirection = Touches.findOne({name: this.name});
+      const sonCourant = thisDirection && thisDirection.currentTouch;
       return sonCourant;
     },
     'sonHtmlText': function() {
-      const sonCourant = Touches.findOne({name: this.name})
-        .currentTouch;
+      const thisDirection = Touches.findOne({name: this.name});
+      const sonCourant = thisDirection && thisDirection.currentTouch;
       const son = _.find(Sons,
         (obj) => obj.fileName === sonCourant);
       return son ? son.htmlText : '';
     },
     'sonImage': function() {
-      const sonCourant = Touches.findOne({name: this.name})
-        .currentTouch;
+      const thisDirection = Touches.findOne({name: this.name});
+      const sonCourant = thisDirection && thisDirection.currentTouch;
       const son = _.find(Sons,
         (obj) => obj.fileName === sonCourant);
       return son ? son.image : '';
