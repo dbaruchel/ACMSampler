@@ -148,7 +148,6 @@ if (Meteor.isClient) {
     }),
     'hasWon': () => {
       return _.every(Sons, function(son) {
-        console.log(Touches.findOne({name: son.goodDirection}).currentTouch, son.filename);
         return son.fileName === Touches.findOne({name: son.goodDirection}).currentTouch;
       });
       // return true;
