@@ -1,63 +1,81 @@
-/* global Touches: true, Directions: true, Sons: true, SonsObjects: true, createjs */
+/* 
+  global Touches: true, Directions: true, Sons: true,
+  SonsObjects: true, OtherSounds: true, OtherSoundsObjects: true, createjs
+*/
 
 // Collection pour communiquer les touches tapees
 Touches = new Mongo.Collection('touches');
 
 //Definition des directions: URL des pages 'vers'
 //La c'est pour 4 joueurs, mais ca pourrait etre plus...
-Directions = ['est', 'sud', 'ouest', 'nord'];
+Directions = ['est', 'sud-est', 'sud', 'sud-ouest', 'ouest',
+  'nord-ouest', 'nord', 'nord-est'];
 const directionAlpha = Math.PI * 2 / Directions.length;
 
-//Definition des sons
+//Definition des sons qui peuvent etre joues depuis une direction
 //Peut etre augmentee, diminuee, changee...
 Sons = [
   {
-    fileName: 'ACM1_full',
-    htmlText: '<b>C’est la vie qui resonne d’un mur a l’autre</b>',
-    image: '/images/ACM1.jpg',
+    fileName: 'ACM8_reperes',
+    htmlText: '<span style="color: orange;">Fuyard ou fou, un passage obligé</span>',
+    image: '/images_vl/est.jpg',
+    goodDirection: 'est',
   },
   {
     fileName: 'ACM2_trou',
-    htmlText: '<i>de caches pour ne pas dire de trous</i>',
-    image: '/images/ACM2.jpg',
-  },
-  {
-    fileName: 'ACM3_ciel',
-    htmlText: '<span style="color: green;">Ciel Vert Safran</span>',
-    image: '/images/ACM3.jpg',
-  },
-  {
-    fileName: 'ACM4_suinte_x',
-    htmlText: '<span style="color: blue;">Suinte etc...</span>',
-    image: '/images/ACM4.jpg',
+    htmlText: 'Combien d\'années perdues à l\'abri dans ce trou ?',
+    image: '/images_vl/sud_est.jpg',
+    goodDirection: 'sud-est',
   },
   {
     fileName: 'ACM5_tatonne',
-    htmlText: '<span style="color: yellow;">Ta tonne ! Gros fat</span>',
-    image: '/images/ACM5.jpg',
+    htmlText: '<span style="color: yellow;">Notre Dame résonne d\'un mur à l\'autre</span>',
+    image: '/images_vl/sud.jpg',
+    goodDirection: 'sud',
   },
   {
     fileName: 'ACM6_hivers',
-    htmlText: '<span style="color: purple;">hivers doux clame. Clame clam ? Blouboup</span>',
-    image: '/images/ACM6.jpg',
+    htmlText: '<span style="color: purple;">Tout à l\'égout. Tout est dégout.</span>',
+    image: '/images_vl/sud_ouest.jpg',
+    goodDirection: 'sud-ouest',
+  },
+  {
+    fileName: 'ACM4_suinte_x',
+    htmlText: '<span style="color: blue;">Ça déborde</span>',
+    image: '/images_vl/ouest.jpg',
+    goodDirection: 'ouest',
   },
   {
     fileName: 'ACM7_passage',
-    htmlText: '<span style="color: grey;">Moliere trebuche</span>',
-    image: '/images/ACM7.jpg',
-  },
-  {
-    fileName: 'ACM8_reperes',
-    htmlText: '<span style="color: orange;">paires</span>',
-    image: '/images/ACM8.jpg',
+    htmlText: '<span style="color: grey;">Molière force le passage... épaules trop larges !</span>',
+    image: '/images_vl/nord_ouest.jpg',
+    goodDirection: 'nord-ouest',
   },
   {
     fileName: 'ACM9_echappee',
-    htmlText: '<span style="color: red;">Hey</span> chat prout',
-    image: '/images/ACM9.jpg',
+    htmlText: '<span style="green: red;">Aurore sacrée. Au nord de tout.</span>',
+    image: '/images_vl/nord.jpg',
+    goodDirection: 'nord',
+  },
+  {
+    fileName: 'ACM3_ciel',
+    htmlText: '<span style="color: orange;">Safran dans le nez ; comment éternuer ?</span>',
+    image: '/images_vl/nord_est.jpg',
+    goodDirection: 'nord-est',
   },
 ];
 const sonAlpha = Math.PI * 2 / Sons.length;
+
+// Other Sounds
+OtherSounds = [
+  {
+    fileName: 'ACM1_full',
+    htmlText: '<b>C’est la vie qui resonne d’un mur a l’autre</b>',
+    //image: '/images/ACM1.jpg',
+    image: '/images_vl/coeur.jpg',
+    goodDirection: 'coeur',
+  },
+];
 const sonExtension = 'm4a';
 
 // Format necessite par la library Sound de createJS
@@ -68,6 +86,14 @@ SonsObjects = Sons.map((son, idx) => {
     fileName: son.fileName,
     src: `${son.fileName}.${sonExtension}`,
     id: idx,
+  };
+});
+
+OtherSoundsObjects = OtherSounds.map((son, idx) => {
+  return {
+    fileName: son.fileName,
+    src: `${son.fileName}.${sonExtension}`,
+    id: idx + Sons.length,
   };
 });
 
@@ -111,11 +137,28 @@ if (Meteor.isServer) {
 // Logique des pages
 //=========PAGE COEUR
 if (Meteor.isClient) {
+  Template.coeur.created = function() {
+    this.coeurProps = new ReactiveDict({});
+  };
+
   //Donnee accessible au coeur
   Template.coeur.helpers({
     'directions': () => _.map(Directions, (dir, idx) => {
       return {name: dir, index: idx};
     }),
+    'hasWon': () => {
+      return _.every(Sons, function(son) {
+        console.log(Touches.findOne({name: son.goodDirection}).currentTouch, son.filename);
+        return son.fileName === Touches.findOne({name: son.goodDirection}).currentTouch;
+      });
+      // return true;
+    },
+    'coeurImage': () => {
+      return _.find(OtherSounds, son => son.goodDirection === 'coeur').image;
+    },
+    'coeurProps': () => {
+      return Template.instance().coeurProps.all();
+    },
   });
 
 
@@ -123,14 +166,14 @@ if (Meteor.isClient) {
     // On se positionne en cercle pour se la peter
     // http://stackoverflow.com/questions/8436187/circular-layout-of-html-elements
     const directionsElems = this.$('.direction-container');
-    const x0 = window.innerWidth / 2;
-    const y0 = window.innerHeight / 2;
+    this.coeurProps.set('x0', window.innerWidth / 2);
+    this.coeurProps.set('y0', window.innerHeight / 2);
     const xRadius = 0.75 * window.innerWidth / 2;
     const yRadius = 0.75 * window.innerHeight / 2;
 
-    directionsElems.each(function(index, elem) {
-      const x = x0 + xRadius * Math.cos(directionAlpha * index);
-      const y = y0 + yRadius * Math.sin(directionAlpha * index);
+    directionsElems.each((index, elem) => {
+      const x = this.coeurProps.get('x0') + xRadius * Math.cos(directionAlpha * index);
+      const y = this.coeurProps.get('y0') + yRadius * Math.sin(directionAlpha * index);
 
       elem.style.left = `${x}px`;
       elem.style.top = `${y}px`;
@@ -151,7 +194,7 @@ if (Meteor.isClient) {
       const assetsPath = '/';
       // createjs.Sound.alternateExtensions = ['mp3']; // add other extensions to try loading if the src file extension is not supported
       createjs.Sound.addEventListener('fileload', createjs.proxy(soundLoaded, this)); // add an event listener for when load is completed
-      createjs.Sound.registerSounds(SonsObjects, assetsPath);
+      createjs.Sound.registerSounds(_.union(SonsObjects, OtherSoundsObjects), assetsPath);
     };
 
     init();
@@ -201,7 +244,7 @@ if (Meteor.isClient) {
         name: Template.currentData().name,
       })._id;
       Touches.update({_id: touchId}, {
-        $set: {touchPlaying: true},
+        $set: {isPlaying: true},
       });
 
       this.soundInstance.addEventListener('complete', (instance) => {
@@ -210,7 +253,7 @@ if (Meteor.isClient) {
           name: this.data.name,
         })._id;
         Touches.update({_id: touchId}, {
-          $set: {touchPlaying: false},
+          $set: {isPlaying: false},
         });
         console.log('finished playing');
       });
@@ -340,7 +383,7 @@ if (Meteor.isClient) {
     'isPlaying': function() {
       const touch = Touches.findOne({name: this.directionName});
       return touch.currentTouch === this.son.fileName
-        && touch.touchPlaying;
+        && touch.isPlaying;
     },
   });
 }

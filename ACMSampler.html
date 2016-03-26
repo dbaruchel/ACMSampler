@@ -13,6 +13,15 @@
       {{>direction name=this.name index=this.index}}
     </div>
   {{/each}}
+  <div class="coeur-container" style="text-align:center; position:absolute; top:{{coeurProps.y0}}px; left: {{coeurProps.x0}}px">
+    <h3>COEUR</h3>
+    {{#if hasWon}}
+      WINNER !
+      <div style="width: 300px; display: block; margin: auto;">
+        <img style="width: 100%; " class="coeur-image" src="{{coeurImage}}">
+      </div>
+    {{/if}}
+  </div>
 </template>
 
 <template name="direction">
@@ -20,7 +29,7 @@
   <div class="direction-number" style="display:none;">{{touchOccurences}}</div>
   <!-- <div class="direction-son-courant">{{sonCourant}}</div> -->
   <div class="direction-son-htmlText">{{{sonHtmlText}}}</div>
-  <div style="width: 100px; display: block; margin-left: auto; margin-right: auto;">
+  <div style="width: 300px; display: block; margin-left: auto; margin-right: auto;">
     <img style="width: 100%;" class="direction-son-image" src="{{sonImage}}">
   </div>
 </template>
@@ -33,7 +42,7 @@
       {{>sonTemplate son=this directionName=directionName}}
     </div>
   {{/each}}
-  <div style="width: 100px; display: block; margin-left: auto; margin-right: auto;">
+  <div style="width: 300px; display: block; margin-left: auto; margin-right: auto;">
     <img style="width: 100%;" class="vers-son-image" src="{{sonImage}}">
   </div>
 </template>
