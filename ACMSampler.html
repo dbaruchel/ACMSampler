@@ -7,20 +7,36 @@
 
 <!-- PAGE COEUR -->
 <template name="coeur">
-  {{#each directions}}
-    <div class="direction-container" style="position:absolute; text-align:center;">
-      <!-- on appelle le template ci dessous -->
-      {{>direction name=this.name index=this.index}}
+  <div class="overlay {{lightStatus}}"></div>
+  <div class="left-pane pane">
+    <div id="light-cone-img-container" class="torch-{{lightStatus}}">
+      <img id="light-cone-img" class="direction-{{torchDirection}}" src="/light-cone.png">
     </div>
-  {{/each}}
-  <div class="coeur-container" style="text-align:center; position:absolute; top:{{coeurProps.y0}}px; left: {{coeurProps.x0}}px">
-    <h3>COEUR</h3>
-    {{#if hasWon}}
-      WINNER !
-      <div style="width: 300px; display: block; margin: auto;">
-        <img style="width: 100%; " class="coeur-image" src="{{coeurImage}}">
+    <div id="torch-img-container">
+      <img id="torch-img" class="direction-{{torchDirection}}" src="/torch-group-image.png">
+    </div>
+    <div id="turn-buttons">
+      <button class="turn-torch" id="turn-left">&larr;</button>
+      <button class="turn-torch" id="turn-right">&rarr;</button>
+    </div>
+    <button id="light-button">light please</button>
+  </div>
+  <div class="right-pane pane">
+    {{#each directions}}
+      <div class="direction-container" style="position:absolute; text-align:center;">
+        <!-- on appelle le template ci dessous -->
+        {{>direction name=this.name index=this.index}}
       </div>
-    {{/if}}
+    {{/each}}
+    <div class="coeur-container" style="text-align:center; position:absolute; top:{{coeurProps.y0}}px; left: {{coeurProps.x0}}px">
+      <h3>COEUR</h3>
+      {{#if hasWon}}
+        WINNER !
+        <div style="width: 300px; display: block; margin: auto;">
+          <img style="width: 100%; " class="coeur-image" src="{{coeurImage}}">
+        </div>
+      {{/if}}
+    </div>
   </div>
 </template>
 
@@ -36,6 +52,8 @@
 
 <!-- PAGE VERS -->
 <template name="vers">
+  {{directionName}}
+  <div id=blackscreen-{{directionName}} class="blackscreen {{lightStatus}} direction-{{torchDirection}}"></div>
   {{#each sons}}
     <div class="son-container" style="position:absolute; text-align:center;">
       <!-- on appelle le template ci dessous -->

@@ -139,6 +139,9 @@ if (Meteor.isServer) {
 // Logique des pages
 //=========PAGE COEUR
 if (Meteor.isClient) {
+  Session.set('lightOn', false );
+  Session.set('torchDirection', 0);
+
   Template.coeur.created = function() {
     this.coeurProps = new ReactiveDict({});
   };
@@ -180,6 +183,36 @@ if (Meteor.isClient) {
     'coeurProps': () => {
       return Template.instance().coeurProps.all();
     },
+    'torchDirection': () => {
+      return Session.get('torchDirection');
+    },
+    'lightStatus': () => {
+      return Session.get('lightOn') ? 'lightOn' : 'lightOff';
+    },
+  });
+
+  Template.coeur.events ({
+    'click #turn-left': function(e, t) {
+      let torchDirection = Session.get('torchDirection');
+      if (torchDirection === 0) {
+        Session.set('torchDirection', 7);
+      }else {
+        Session.set('torchDirection', torchDirection - 1);
+      }
+    },
+    'click #turn-right': function(e, t) {
+      let torchDirection = Session.get('torchDirection');
+      if (torchDirection === 7) {
+        Session.set('torchDirection', 0);
+      } else {
+        Session.set('torchDirection', torchDirection + 1);
+      }
+    },
+    'click #light-button': function(e, t) {
+      let lightStatus = Session.get('lightOn');
+      Session.set('lightOn', !lightStatus);
+    },
+
   });
 
 
@@ -360,6 +393,12 @@ if (Meteor.isClient) {
       const son = _.find(Sons,
         (obj) => obj.fileName === sonCourant);
       return son ? son.image : '';
+    },
+    'torchDirection': () => {
+      return Session.get('torchDirection');
+    },
+    'lightStatus': () => {
+      return Session.get('lightOn') ? 'lightOn' : 'lightOff';
     },
   });
 

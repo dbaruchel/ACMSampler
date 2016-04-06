@@ -1,1 +1,142 @@
 /* CSS declarations go here */
+body {
+  margin:0;
+  background-color: #FF8080;
+}
+
+.overlay {
+  position: absolute;
+  z-index: 100;
+  background-color: rgba(0,0,0,0.5);
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+}
+.blackscreen {
+  position: absolute;
+  z-index: 100;
+  background-color: black;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+}
+
+.overlay.lightOn {
+  display: none;
+}
+
+.pane {
+  display: inline-block;
+  vertical-align: top;
+  width:49%;
+  height: 100vh;
+  position: relative;
+  border:1px solid #eee;
+}
+
+#light-cone-img-container {
+  position: absolute;
+  height: 100vh;
+  width: 20vw;
+  top:0;
+  left:14.5vw;
+  pointer-events: none;
+}
+
+#light-cone-img-container.torch-lightOff {
+  display: none;
+}
+
+#light-cone-img {
+  width: 100%;
+  height: 100%;
+}
+
+#torch-img-container {
+  width: 12.5vw;
+  height: 28.375vw;
+  /*img aspect ratio is 2.27*/
+  margin: calc(50vh - 14.1875vw) auto;
+}
+
+#torch-img {
+  width: 100%;
+}
+
+#turn-buttons {
+  position: absolute;
+  bottom: 10vh;
+  width: 100%;
+}
+#turn-buttons .turn-torch {
+  display: inline-block;
+  vertical-align: top;
+  font-size: 20px;
+  line-height: 60px;
+  text-align: center;
+  height: 60px;
+  width: 60px;
+  border-radius: 50%;
+  margin:0 calc(11vw - 25px);
+}
+
+#light-button {
+  position: absolute;
+  top:calc(50vh - 25px);
+  left:calc(25vw - 25px);
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: red;
+}
+
+.direction-0 {
+  transform: rotate(0);
+  transition: 0.5s;
+}
+
+.direction-1 {
+  transform: rotate(45deg);
+  transition: 0.5s;
+}
+
+.direction-2 {
+  transform: rotate(90deg);
+  transition: 0.5s;
+}
+
+.direction-3 {
+  transform: rotate(135deg);
+  transition: 0.5s;
+}
+
+.direction-4 {
+  transform: rotate(180deg);
+  transition: 0.5s;
+}
+
+.direction-5 {
+  transform: rotate(225deg);
+  transition: 0.5s;
+}
+
+.direction-6 {
+  transform: rotate(270deg);
+  transition: 0.5s;
+}
+
+.direction-7 {
+  transform: rotate(315deg);
+  transition: 0.5s;
+}
+
+#blackscreen-nord.lightOn.direction-0,
+#blackscreen-nord-est.lightOn.direction-1,
+#blackscreen-est.lightOn.direction-2,
+#blackscreen-sud-est.lightOn.direction-3,
+#blackscreen-sud.lightOn.direction-4,
+#blackscreen-sud-ouest.lightOn.direction-5,
+#blackscreen-ouest.lightOn.direction-6,
+#blackscreen-nord-ouest.lightOn.direction-7 {
+  display: none;
+}
