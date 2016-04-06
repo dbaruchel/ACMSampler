@@ -8,7 +8,7 @@
 <!-- PAGE COEUR -->
 <template name="coeur">
   <div class="overlay {{lightStatus}}"></div>
-  <div class="left-pane pane">
+  <div class="torch-pane pane">
     <div id="light-cone-img-container" class="torch-{{lightStatus}}">
       <img id="light-cone-img" class="direction-{{torchDirection}}" src="/light-cone.png">
     </div>
@@ -21,9 +21,9 @@
     </div>
     <button id="light-button">light please</button>
   </div>
-  <div class="right-pane pane">
+  <div class="floor-pane pane">
     {{#each directions}}
-      <div class="direction-container" style="position:absolute; text-align:center;">
+      <div id="direction-{{this.name}}-container" class="direction-container" style="position:absolute; text-align:center;">
         <!-- on appelle le template ci dessous -->
         {{>direction name=this.name index=this.index}}
       </div>
@@ -41,10 +41,10 @@
 </template>
 
 <template name="direction">
-  <div class="direction-name">{{name}}</div>
+  <div class="direction-name" style="position:absolute;color:white">{{name}}</div>
   <div class="direction-number" style="display:none;">{{touchOccurences}}</div>
   <!-- <div class="direction-son-courant">{{sonCourant}}</div> -->
-  <div class="direction-son-htmlText">{{{sonHtmlText}}}</div>
+  <div class="direction-son-htmlText" style="position: absolute;">{{{sonHtmlText}}}</div>
   <div style="width: 300px; display: block; margin-left: auto; margin-right: auto;">
     <img style="width: 100%;" class="direction-son-image" src="{{sonImage}}">
   </div>
