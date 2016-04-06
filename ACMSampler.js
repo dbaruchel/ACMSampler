@@ -6,6 +6,17 @@
 // Collection pour communiquer les touches tapees
 Touches = new Mongo.Collection('touches');
 
+//Object global pour storer letat de la lampe
+Torch = new Mongo.Collection('torch');
+
+Torch.set = function(field, value) {
+  let modifier = {};
+  modifier[field] = value;
+  Torch.update({_id: Torch.findOne()._id}, {
+    $set: modifier,
+  });
+};
+
 //Definition des directions: URL des pages 'vers'
 //La c'est pour 4 joueurs, mais ca pourrait etre plus...
 Directions = ['est', 'sud-est', 'sud', 'sud-ouest', 'ouest',
@@ -133,15 +144,20 @@ if (Meteor.isServer) {
         isPlaying: false,
       });
     });
+
+    Torch.remove({});
+    Torch.insert({
+      lightOn: false,
+      torchDirection: 0,
+    });
   });
+
+
 }
 
 // Logique des pages
 //=========PAGE COEUR
 if (Meteor.isClient) {
-  Session.set('lightOn', false );
-  Session.set('torchDirection', 0);
-
   Template.coeur.created = function() {
     this.coeurProps = new ReactiveDict({});
   };
@@ -184,33 +200,33 @@ if (Meteor.isClient) {
       return Template.instance().coeurProps.all();
     },
     'torchDirection': () => {
-      return Session.get('torchDirection');
+      return Torch.findOne().torchDirection;
     },
     'lightStatus': () => {
-      return Session.get('lightOn') ? 'lightOn' : 'lightOff';
+      return Torch.findOne().lightOn ? 'lightOn' : 'lightOff';
     },
   });
 
-  Template.coeur.events ({
+  Template.coeur.events({
     'click #turn-left': function(e, t) {
-      let torchDirection = Session.get('torchDirection');
+      let torchDirection = Torch.findOne().torchDirection;
       if (torchDirection === 0) {
-        Session.set('torchDirection', 7);
+        Torch.set('torchDirection', 7);
       }else {
-        Session.set('torchDirection', torchDirection - 1);
+        Torch.set('torchDirection', torchDirection - 1);
       }
     },
     'click #turn-right': function(e, t) {
-      let torchDirection = Session.get('torchDirection');
+      let torchDirection = Torch.findOne().torchDirection;
       if (torchDirection === 7) {
-        Session.set('torchDirection', 0);
+        Torch.set('torchDirection', 0);
       } else {
-        Session.set('torchDirection', torchDirection + 1);
+        Torch.set('torchDirection', torchDirection + 1);
       }
     },
     'click #light-button': function(e, t) {
-      let lightStatus = Session.get('lightOn');
-      Session.set('lightOn', !lightStatus);
+      let lightStatus = Torch.findOne().lightOn;
+      Torch.set('lightOn', !lightStatus);
     },
 
   });
@@ -395,10 +411,10 @@ if (Meteor.isClient) {
       return son ? son.image : '';
     },
     'torchDirection': () => {
-      return Session.get('torchDirection');
+      return Torch.findOne().torchDirection;
     },
     'lightStatus': () => {
-      return Session.get('lightOn') ? 'lightOn' : 'lightOff';
+      return Torch.findOne().lightOn ? 'lightOn' : 'lightOff';
     },
   });
 
