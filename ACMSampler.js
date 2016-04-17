@@ -149,10 +149,10 @@ if (Meteor.isServer) {
     Torch.insert({
       lightOn: false,
       torchDirection: 0,
+      hasLock: true,
+      hasKey: false,
     });
   });
-
-
 }
 
 // Logique des pages
@@ -205,30 +205,53 @@ if (Meteor.isClient) {
     'lightStatus': () => {
       return Torch.findOne().lightOn ? 'lightOn' : 'lightOff';
     },
+    'hasKey': () => {
+      return Torch.findOne().hasKey;
+    },
+    'hasLock': () => {
+      return Torch.findOne().hasLock;
+    },
   });
 
   Template.coeur.events({
     'click #turn-left': function(e, t) {
       let torchDirection = Torch.findOne().torchDirection;
-      if (torchDirection === 0) {
-        Torch.set('torchDirection', 7);
-      }else {
-        Torch.set('torchDirection', torchDirection - 1);
+      let hasLock = Torch.findOne().hasLock;
+      if (!hasLock) {
+        if (torchDirection === 0) {
+          Torch.set('torchDirection', 7);
+        }else {
+          Torch.set('torchDirection', torchDirection - 1);
+        }
+      } else {
+        alert('Quelque chose semble empêcher la torche de tourner...');
       }
     },
     'click #turn-right': function(e, t) {
       let torchDirection = Torch.findOne().torchDirection;
-      if (torchDirection === 7) {
-        Torch.set('torchDirection', 0);
+      let hasLock = Torch.findOne().hasLock;
+      if (!hasLock) {
+        if (torchDirection === 7) {
+          Torch.set('torchDirection', 0);
+        } else {
+          Torch.set('torchDirection', torchDirection + 1);
+        }
       } else {
-        Torch.set('torchDirection', torchDirection + 1);
+        alert('Quelque chose semble empêcher la torche de tourner...');
       }
     },
     'click #light-button': function(e, t) {
       let lightStatus = Torch.findOne().lightOn;
       Torch.set('lightOn', !lightStatus);
     },
-
+    'click #lock': function(e, t) {
+      let hasKey = Torch.findOne().hasKey;
+      if (hasKey) {
+        Torch.set('hasLock', false);
+      } else {
+        alert('Ce cadenas semble bien fermé...');
+      }
+    },
   });
 
 
@@ -416,6 +439,12 @@ if (Meteor.isClient) {
     'lightStatus': () => {
       return Torch.findOne().lightOn ? 'lightOn' : 'lightOff';
     },
+    'isNorth': () => {
+      return Template.instance().directionName === 'nord';
+    },
+    'hasKey': () => {
+      return Torch.findOne().hasKey;
+    },
   });
 
 
@@ -447,6 +476,12 @@ if (Meteor.isClient) {
       }
     });
   };
+
+  Template.vers.events({
+    'click #key': function(e, t) {
+      Torch.set('hasKey', true);
+    },
+  });
 
   //donnees et events des directions
   Template.sonTemplate.events({

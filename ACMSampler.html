@@ -7,46 +7,60 @@
 
 <!-- PAGE COEUR -->
 <template name="coeur">
-  <div class="overlay {{lightStatus}}"></div>
-  <div class="torch-pane pane">
-    <div id="light-cone-img-container" class="torch-{{lightStatus}}">
-      <img id="light-cone-img" class="direction-{{torchDirection}}" src="/light-cone.png">
-    </div>
-    <div id="torch-img-container">
-      <img id="torch-img" class="direction-{{torchDirection}}" src="/torch-group-image.png">
-    </div>
-    <div id="turn-buttons">
-      <button class="turn-torch" id="turn-left">&larr;</button>
-      <button class="turn-torch" id="turn-right">&rarr;</button>
-    </div>
-    <button id="light-button">light please</button>
-  </div>
-  <div class="floor-pane pane">
-    {{#each directions}}
-      <div id="direction-{{this.name}}-container" class="direction-container" style="position:absolute; text-align:center;">
-        <!-- on appelle le template ci dessous -->
-        {{>direction name=this.name index=this.index}}
+  <div id="coeur-template">
+    <div class="overlay {{lightStatus}}"></div>
+    <div class="torch-pane pane">
+      <div id="light-cone-img-container" class="torch-{{lightStatus}}">
+        <img id="light-cone-img" class="direction-{{torchDirection}}" src="/light-cone.png">
       </div>
-    {{/each}}
-    <div class="coeur-container" style="text-align:center; position:absolute; top:{{coeurProps.y0}}px; left: {{coeurProps.x0}}px">
-      <h3>COEUR</h3>
-      {{#if hasWon}}
-        WINNER !
-        <div style="width: 300px; display: block; margin: auto;">
-          <img style="width: 100%; " class="coeur-image" src="{{coeurImage}}">
+      <div id="torch-img-container">
+        <img id="torch-img" class="direction-{{torchDirection}}" src="/torch-group-image.png">
+      </div>
+      {{#if hasLock}}
+        <div id="lock-container">
+          <img id="lock" src="/lock-img.png">
         </div>
       {{/if}}
+      {{#if hasKey}}
+        <div id="key-indicator">
+          <img id="key" src="/key.png">
+        </div>
+      {{/if}}
+      <div id="turn-buttons">
+        <button class="turn-torch" id="turn-left">&larr;</button>
+        <button class="turn-torch" id="turn-right">&rarr;</button>
+      </div>
+      <button id="light-button"></button>
+    </div>
+    <div class="floor-pane pane">
+      {{#each directions}}
+        <div id="direction-{{this.name}}-container" class="direction-container" style="position:absolute; text-align:center;">
+          <!-- on appelle le template ci dessous -->
+          {{>direction name=this.name index=this.index}}
+        </div>
+      {{/each}}
+      <div class="coeur-container" style="text-align:center; position:absolute; top:{{coeurProps.y0}}px; left: {{coeurProps.x0}}px">
+        {{#if hasWon}}
+          WINNER !
+          <div style="display: block; margin: auto;">
+            <img style="width: 100%; " class="coeur-image" src="{{coeurImage}}">
+          </div>
+        {{/if}}
+      </div>
+    </div>
+    <div id="torch-base-container">
+      <img id="torch-base" src="/torch-base.png">
     </div>
   </div>
 </template>
 
 <template name="direction">
-  <div class="direction-name" style="position:absolute;color:white">{{name}}</div>
+<!--   <div class="direction-name" style="position:absolute;color:white">{{name}}</div> -->
   <div class="direction-number" style="display:none;">{{touchOccurences}}</div>
   <!-- <div class="direction-son-courant">{{sonCourant}}</div> -->
   <div class="direction-son-htmlText" style="position: absolute;">{{{sonHtmlText}}}</div>
-  <div style="width: 300px; display: block; margin-left: auto; margin-right: auto;">
-    <img style="width: 100%;" class="direction-son-image" src="{{sonImage}}">
+  <div style="width: 100%;height: 100%;">
+    <img class="direction-son-image" src="{{sonImage}}">
   </div>
 </template>
 
@@ -54,6 +68,17 @@
 <template name="vers">
   {{directionName}}
   <div id=blackscreen-{{directionName}} class="blackscreen {{lightStatus}} direction-{{torchDirection}}"></div>
+  {{#if isNorth}}
+    {{#if hasKey}}
+      <div id="key-indicator">
+        <img id="key" src="/key.png">
+      </div>
+    {{else}}
+      <div id="key-container">
+        <img id="key" src="/key.png">
+      </div>
+    {{/if}}
+  {{/if}}
   {{#each sons}}
     <div class="son-container" style="position:absolute; text-align:center;">
       <!-- on appelle le template ci dessous -->
