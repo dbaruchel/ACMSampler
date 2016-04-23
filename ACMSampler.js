@@ -1,5 +1,5 @@
-/* 
-  global Touches: true, Directions: true, Sons: true,
+/*
+  global Touches: true, Directions: true, Sons: true, Torch: true,
   SonsObjects: true, OtherSounds: true, OtherSoundsObjects: true, createjs
 */
 
@@ -433,55 +433,101 @@ if (Meteor.isClient) {
         (obj) => obj.fileName === sonCourant);
       return son ? son.image : '';
     },
+    'isWon': function() {
+      const directionName = Template.instance().directionName;
+      const localSoundPlaying = Touches.findOne({name: directionName})
+        .currentTouch;
+      return _.find(Sons, son => son.fileName === localSoundPlaying)
+        .goodDirection === directionName;
+    },
+    //MAIN CONTROLS
     'torchDirection': () => {
       return Torch.findOne().torchDirection;
     },
     'lightStatus': () => {
       return Torch.findOne().lightOn ? 'lightOn' : 'lightOff';
     },
-    'isNorth': () => {
-      return Template.instance().directionName === 'nord';
+    'isDirection': (directionName) => {
+      return Template.instance().directionName === directionName;
     },
     'hasKey': () => {
       return Torch.findOne().hasKey;
     },
+
+    //
   });
 
+  function validateInput(res, directionName) {
+    const response = {errorMessage: 'Courage', soundToPlay: null};
+    switch (directionName) {
+      case 'nord':
+        if (res === 'aurore') {
+          Torch.set('hasKey', true);
+          response.errorMessage = null;
+        } else {
+          response.errorMessage = 'au fond se lève';
+        }
+        break;
+      default:
+        return {errorMessage: 'Courage.'};
+    }
+
+    if (response.errorMessage === null) {
+      response.soundToPlay = _.find(Sons,
+        son => son.goodDirection === directionName).fileName;
+    }
+    return response;
+  }
+
+  Template.vers.events({
+    //ALL TEMPLATES WITH INPUT
+    'click .input-submit': function(e, t) {
+      const res = $('.input').val();
+      const directionName = t.directionName;
+      const {errorMessage, soundToPlay} = validateInput(res, directionName);
+      if (errorMessage) {
+        $('.help-message').html(errorMessage);
+      } else if (soundToPlay) {
+        updateTouch(directionName, soundToPlay);
+      }
+    },
+    //NORD
+    'click #key': function(e, t) {
+      Torch.set('hasKey', true);
+    }
+    //
+  });
 
   Template.vers.rendered = function() {
     // On se positionne toujours en cercle pour se la peter
-    const directionsElems = this.$('.son-container');
-    const x0 = window.innerWidth / 2;
-    const y0 = window.innerHeight / 2;
-    const xRadius = 0.75 * window.innerWidth / 2;
-    const yRadius = 0.75 * window.innerHeight / 2;
+    // const directionsElems = this.$('.son-container');
+    // const x0 = window.innerWidth / 2;
+    // const y0 = window.innerHeight / 2;
+    // const xRadius = 0.75 * window.innerWidth / 2;
+    // const yRadius = 0.75 * window.innerHeight / 2;
 
-    directionsElems.each(function(index, elem) {
-      const x = x0 + xRadius * Math.cos(sonAlpha * index);
-      const y = y0 + yRadius * Math.sin(sonAlpha * index);
-      elem.style.left = `${x}px`;
-      elem.style.top = `${y}px`;
-    });
+    // directionsElems.each(function(index, elem) {
+    //   const x = x0 + xRadius * Math.cos(sonAlpha * index);
+    //   const y = y0 + yRadius * Math.sin(sonAlpha * index);
+    //   elem.style.left = `${x}px`;
+    //   elem.style.top = `${y}px`;
+    // });
 
     // Yes, you can play with a,b,c,d,e... depending of the number of sounds !
-    $(window).on('keydown', (e) => {
-      const aKeyCode = 65;
-      const keyPressedCode = e.which;
-      // b=66, c =67...
-      if (aKeyCode < keyPressedCode
-        && keyPressedCode < aKeyCode + Sons.length - 1) {
-        const sonIndex = keyPressedCode - aKeyCode;
-        updateTouch(this.directionName, Sons[sonIndex].fileName);
-        e.preventDefault();
-      }
-    });
+    // $(window).on('keydown', (e) => {
+    //   const aKeyCode = 65;
+    //   const keyPressedCode = e.which;
+    //   // b=66, c =67...
+    //   if (aKeyCode < keyPressedCode
+    //     && keyPressedCode < aKeyCode + Sons.length - 1) {
+    //     const sonIndex = keyPressedCode - aKeyCode;
+    //     updateTouch(this.directionName, Sons[sonIndex].fileName);
+    //     e.preventDefault();
+    //   }
+    // });
   };
 
-  Template.vers.events({
-    'click #key': function(e, t) {
-      Torch.set('hasKey', true);
-    },
-  });
+
 
   //donnees et events des directions
   Template.sonTemplate.events({

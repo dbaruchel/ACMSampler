@@ -68,26 +68,51 @@
 <template name="vers">
   {{directionName}}
   <div id=blackscreen-{{directionName}} class="blackscreen {{lightStatus}} direction-{{torchDirection}}"></div>
-  {{#if isNorth}}
-    {{#if hasKey}}
-      <div id="key-indicator">
-        <img id="key" src="/key.png">
-      </div>
+
+
+  <!-- VERS NORD -->
+  {{#if isDirection 'nord'}}
+    {{#if isWon}}
+
+    <p> You won </p>
+
     {{else}}
-      <div id="key-container">
-        <img id="key" src="/key.png">
-      </div>
+
+      {{#if hasKey}}
+        <div id="key-indicator">
+          <img id="key" src="/key.png">
+        </div>
+      {{else}}
+        <div id="key-container">
+          <img id="key" src="/key.png">
+        </div>
+      {{/if}}
+      <p class="help-message"></p>
+      <input class="input"/>
+      <btn class="input-submit">V</btn>
+
     {{/if}}
   {{/if}}
-  {{#each sons}}
+
+  {{#if isDirection 'nord-ouest'}}
+    <p class="help-message"></p>
+    <input class="input"/>
+    <btn class="input-submit">V</btn>
+  {{/if}}
+
+
+
+
+
+  <!-- ROND DES SONS INUTILE MAINTENANT -->
+<!--   {{#each sons}}
     <div class="son-container" style="position:absolute; text-align:center;">
-      <!-- on appelle le template ci dessous -->
       {{>sonTemplate son=this directionName=directionName}}
     </div>
-  {{/each}}
-  <div style="width: 300px; display: block; margin-left: auto; margin-right: auto;">
+  {{/each}} -->
+<!--   <div style="width: 300px; display: block; margin-left: auto; margin-right: auto;">
     <img style="width: 100%;" class="vers-son-image" src="{{sonImage}}">
-  </div>
+  </div> -->
 </template>
 
 <template name="sonTemplate">
