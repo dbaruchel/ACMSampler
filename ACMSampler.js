@@ -91,6 +91,36 @@ OtherSounds = [
     image: '/images_vl/coeur.jpg',
     goodDirection: 'coeur',
   },
+  {
+    fileName: 'tatonne-notes',
+    htmlText: '',
+    image: '',
+    goodDirection: '',
+  },
+  {
+    fileName: 'clochesSons/cloche_do',
+    htmlText: '',
+    image: '',
+    goodDirection: '',
+  },
+  {
+    fileName: 'clochesSons/cloche_fa',
+    htmlText: '',
+    image: '',
+    goodDirection: '',
+  },
+  {
+    fileName: 'clochesSons/cloche_ladiese',
+    htmlText: '',
+    image: '',
+    goodDirection: '',
+  },
+  {
+    fileName: 'clochesSons/cloche_mi',
+    htmlText: '',
+    image: '',
+    goodDirection: '',
+  }
 ];
 const sonExtension = 'm4a';
 
@@ -496,7 +526,6 @@ if (Meteor.isClient) {
         break;
       case 'sud-est':
         //Fouilles trous
-        debugger;
         if (res === 'graine') {
           response.errorMessage = null;
         } else {
@@ -542,6 +571,19 @@ if (Meteor.isClient) {
     return response;
   }
 
+  function playSon(sonName) {
+    let playedSound = createjs.Sound.play(
+      _.find(OtherSoundsObjects, son => son.fileName === sonName).id, {
+        pan: 0.0001,
+        volume: 1,
+      });
+    if (playedSound === null ||
+      playedSound.playState === createjs.Sound.PLAY_FAILED) {
+      return;
+    }
+  }
+
+
   Template.vers.events({
     //ALL TEMPLATES WITH INPUT
     'click .input-submit': function(e, t) {
@@ -557,8 +599,28 @@ if (Meteor.isClient) {
     //NORD
     'click #key': function(e, t) {
       Torch.set('hasKey', true);
-    }
-    //
+    },
+    //SUD CLOCHES
+    //Cloche 1 : son associé =  cloche_mi
+    // Cloche 2 : son associé = cloche_fa
+    // Cloche 3 : son associé = cloche_ladiese
+    // Cloche 4 : son associé = cloche_do
+    // Corde : son associé = "elle TAtonne"
+    'click #tige': function() {
+      playSon('tatonne-notes');
+    },
+    'click #cloche-1': function() {
+      playSon('clochesSons/cloche_mi');
+    },
+    'click #cloche-2': function() {
+      playSon('clochesSons/cloche_fa');
+    },
+    'click #cloche-3': function() {
+      playSon('clochesSons/cloche_ladiese');
+    },
+    'click #cloche-4': function() {
+      playSon('clochesSons/cloche_do');
+    },
   });
 
   Template.vers.rendered = function() {
@@ -588,6 +650,25 @@ if (Meteor.isClient) {
     //     e.preventDefault();
     //   }
     // });
+    // On Load les sons avec createJS
+    // https://github.com/CreateJS/SoundJS/blob/master/examples/02_PlayOnClick.html
+    const soundLoaded = function(event) {
+      console.log('sound loaded', event.id);
+    };
+
+    const init = function() {
+      if (!createjs.Sound.initializeDefaultPlugins()) {
+        alert('error init createjs');
+        return;
+      }
+
+      const assetsPath = '/';
+      // createjs.Sound.alternateExtensions = ['mp3']; // add other extensions to try loading if the src file extension is not supported
+      createjs.Sound.addEventListener('fileload', createjs.proxy(soundLoaded, this)); // add an event listener for when load is completed
+      createjs.Sound.registerSounds(_.union(SonsObjects, OtherSoundsObjects), assetsPath);
+    };
+
+    init();
   };
 
 
