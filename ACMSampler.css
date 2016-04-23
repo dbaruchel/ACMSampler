@@ -30,6 +30,16 @@ body {
   position: absolute;
 }
 
+#carte-moliere {
+  left:0;
+  top:0;
+  width:100vw;
+  height:100vh;
+  object-fit:cover;
+  z-index: -1;
+  position: absolute;
+}
+
 #final-message-container {
   text-align: center;
   padding-top:20vh;

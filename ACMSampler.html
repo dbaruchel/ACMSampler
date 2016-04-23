@@ -43,7 +43,7 @@
         {{#if hasWon}}
           <div id="final-message-container">
             <div id="final-message">
-              La clé est cachée....
+              La clé est cachée bien en dessous de la boîte...
             </div>
           </div>
 <!--           <div style="display: block; margin: auto;">
@@ -80,6 +80,14 @@
 
     <div class="you-won-container">
       <div class="you-won">Tu as remporté la carte du {{directionName}} !
+        {{#if hasKey}}
+          <div class="bravo-cle">Tu as la clé</div>
+        {{else}}
+          <div class="prends-clé">Prends la clé</div>
+          <div id="key-container">
+            <img id="key" src="/key.png">
+          </div>
+        {{/if}}
       </div>
     </div>
 
@@ -87,10 +95,6 @@
 
       {{#if hasKey}}
         <div id="key-indicator">
-          <img id="key" src="/key.png">
-        </div>
-      {{else}}
-        <div id="key-container">
           <img id="key" src="/key.png">
         </div>
       {{/if}}
@@ -176,7 +180,7 @@
         <img id="cloche-3" src="/cloches/cloche3.jpg"/>
         <img id="cloche-4" src="/cloches/cloche4.jpg"/>
         <p class="help-message"></p>
-        <btn class="input-submit"> Fini de tatonner! j'apporte l'ordre: </btn>
+        <button class="input-submit"> Fini de tatonner! j'apporte l'ordre: </button>
         <input class="input"/>
       </div>
 
@@ -228,8 +232,8 @@
         </div>
       </div>
     {{else}}
-      <div class="enigma-container">
-        <img src="/carte.png"/>
+      <div class="enigma-container moliere">
+        <img id="carte-moliere" src="/carte.png"/>
         <p class="help-message"></p>
         <button class="input-submit">Son nom: </button>
         <input class="input"/>
