@@ -1,6 +1,6 @@
 /*
   global Touches: true, Directions: true, Sons: true, Torch: true,
-  SonsObjects: true, OtherSounds: true, OtherSoundsObjects: true, createjs
+  SonsObjects: true, OtherSounds: true, OtherSoundsObjects: true, CVS: true, createjs
 */
 
 // Collection pour communiquer les touches tapees
@@ -16,6 +16,11 @@ Torch.set = function(field, value) {
     $set: modifier,
   });
 };
+
+//Collection poru recueillir les reponses de l'enigme
+CVS = new Mongo.Collection('ciel-vert-safran');
+CurrentPlayer = new Mongo.Collection ('player');
+
 
 //Definition des directions: URL des pages 'vers'
 //La c'est pour 4 joueurs, mais ca pourrait etre plus...
@@ -133,6 +138,9 @@ if (Meteor.isClient) {
 //reset de la base de donnee
 if (Meteor.isServer) {
   Meteor.startup(function() {
+    CurrentPlayer.remove({});
+    // CurrentPlayer.insert({name: 'admin'});
+    // a changer pour chaque joueur
     Touches.remove({});
 
     //1 document par direction insere dans la base de donnees
@@ -176,7 +184,7 @@ if (Meteor.isClient) {
       if (hasWon && hasWon !== templ.previousHasWon) {
         console.log('FIRST WON');
         //Play the final coeur sound
-        
+ 
         Meteor.defer(function() {
           templ.coeurSound = createjs.Sound.play(
             _.find(OtherSoundsObjects, son => son.goodDirection === 'coeur').id, {
@@ -468,8 +476,63 @@ if (Meteor.isClient) {
           response.errorMessage = 'au fond se lève';
         }
         break;
+      case 'nord-est':
+        //valide par le clochard
+        response.errorMessage = null;
+        break;
+      case 'est':
+        //FAUX INPUT
+        let playerName = 'admin';
+        const currentPlayer = CurrentPlayer.findOne({});
+        if (currentPlayer && currentPlayer.name) {
+          playerName = currentPlayer.name;
+        }
+        if (CVS.find({joueur: playerName}).count() === 0) {
+          response.errorMessage = 'Non -- c\'est pas ça !... Courage !';
+        } else {
+          response.errorMessage = null;
+        }
+        CVS.insert({joueur: playerName, message: res});
+        break;
+      case 'sud-est':
+        //Fouilles trous
+        debugger;
+        if (res === 'graine') {
+          response.errorMessage = null;
+        } else {
+          response.errorMessage = 'La vérité se terre sous les mensonges';
+        }
+        break;
+      case 'sud':
+        if (res === '121') {
+          response.errorMessage = null;
+        } else {
+          response.errorMessage = '3 chiffres suffiront accollés';
+        }
+        break;
+      case 'sud-ouest':
+        if (res === '2413') {
+          response.errorMessage = null;
+        } else {
+          response.errorMessage = 'des chiffres à la suite pour donner du sens';
+        }
+        break;
+      case 'ouest':
+        if (res === 'suinte') {
+          response.errorMessage = null;
+        } else {
+          response.errorMessage = 'une fois relié, le papier colle';
+        }
+        break;
+      case 'nord-ouest':
+        if (res === 'moliere') {
+          response.errorMessage = null;
+        } else {
+          response.errorMessage = 'une fois relié, le papier colle';
+        }
+        break;
       default:
-        return {errorMessage: 'Courage.'};
+        return {errorMessage: 'Epaule trop larges ? ... Courage.'};
     }
 
     if (response.errorMessage === null) {
@@ -482,7 +545,7 @@ if (Meteor.isClient) {
   Template.vers.events({
     //ALL TEMPLATES WITH INPUT
     'click .input-submit': function(e, t) {
-      const res = $('.input').val();
+      const res = slugify($('.input') && $('.input').val());
       const directionName = t.directionName;
       const {errorMessage, soundToPlay} = validateInput(res, directionName);
       if (errorMessage) {

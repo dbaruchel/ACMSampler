@@ -70,7 +70,7 @@
   <div id=blackscreen-{{directionName}} class="blackscreen {{lightStatus}} direction-{{torchDirection}}"></div>
 
 
-  <!-- VERS NORD -->
+  <!-- VERS NORD INTRO AURORE-->
   {{#if isDirection 'nord'}}
     {{#if isWon}}
 
@@ -87,6 +87,7 @@
           <img id="key" src="/key.png">
         </div>
       {{/if}}
+      <h3>Quel prénom se cache dans cette image ?</h3>
       <p class="help-message"></p>
       <input class="input"/>
       <btn class="input-submit">V</btn>
@@ -94,10 +95,100 @@
     {{/if}}
   {{/if}}
 
+  <!-- VERS NORD-EST CLOCHARD -->
+  {{#if isDirection 'nord-est'}}
+    {{#if isWon}}
+
+    <p> You won </p>
+
+    {{else}}
+      <h3>...</h3>
+      <p class="help-message"></p>
+      <btn class="input-submit">HAHAHAH TRES DROLE</btn>
+
+    {{/if}}
+  {{/if}}
+
+  <!-- VERS EST FAUX INPUT -->
+  {{#if isDirection 'est'}}
+    {{#if isWon}}
+
+    <p> You won </p>
+
+    {{else}}
+      <h3>Repaires de fuyards ou Escale de fous. . .  Qui suis-je ?</h3>
+      <p class="help-message"></p>
+      <input class="input"/>
+      <btn class="input-submit">Sur ?</btn>
+    {{/if}}
+  {{/if}}
+
+  <!-- VERS SUD-EST FOUILLES ET TROUS -->
+  {{#if isDirection 'sud-est'}}
+    {{#if isWon}}
+
+    <p> You won </p>
+
+    {{else}}
+      <h3>Une seule cache, parmi tant de trous...</h3>
+      <p class="help-message"></p>
+      <input class="input"/>
+      <btn class="input-submit">plante au coeur</btn>
+    {{/if}}
+  {{/if}}
+
+  <!-- VERS SUD CLOCHES -->
+  {{#if isDirection 'sud'}}
+    {{#if isWon}}
+      <p> You won </p>
+
+    {{else}}
+      <h3>Touche les sons</h3>
+      <p class="help-message"></p>
+      <btn class="input-submit"> J'ai fini de tatonner, j'apporte l'ordre.</btn>
+      <input class="input"/>
+    {{/if}}
+  {{/if}}
+
+  <!-- VERS SUD OUEST TEXTE A TROUS -->
+  {{#if isDirection 'sud-ouest'}}
+    {{#if isWon}}
+      <p> You won </p>
+
+    {{else}}
+      <h3>"L'évidence des  ...  doux calme le plus malhonnête des  ...  .  <br/> La  ...  lave et emporte à l'égout les  ... "</h3>
+      <br/>
+      <h5>1-Pluie 2-Hivers 3-Épaves 4-Hommes</h5>
+      <p class="help-message"></p>
+      <input class="input"/>
+      <btn class="input-submit">Trouvé!</btn>
+    {{/if}}
+  {{/if}}
+
+  <!-- VERS OUEST SUINTE JEU PAPIER -->
+  {{#if isDirection 'ouest'}}
+    {{#if isWon}}
+      <p> You won </p>
+
+    {{else}}
+      <h3>Les traits sur le mur dégoulinent</h3>
+      <p class="help-message"></p>
+      <btn class="input-submit">Elle: </btn>
+      <input class="input"/>
+    {{/if}}
+  {{/if}}
+
+  <!-- VERS NORD-OUEST GOOGL MAP MOLIERE-->
   {{#if isDirection 'nord-ouest'}}
-    <p class="help-message"></p>
-    <input class="input"/>
-    <btn class="input-submit">V</btn>
+    {{#if isWon}}
+      <p> You won </p>
+
+    {{else}}
+      <img src="/carte.png"/>
+      <p class="help-message"></p>
+      <btn class="input-submit">Son nom: </btn>
+      <input class="input"/>
+    {{/if}}
   {{/if}}
 
 
