@@ -40,7 +40,7 @@ Sons = [
   {
     fileName: 'ACM2_trou',
     htmlText: 'Combien d\'années perdues à l\'abri dans ce trou ?',
-    image: '/images_vl/sud_est.jpg',
+    image: '/images_vl/sud-est.jpg',
     goodDirection: 'sud-est',
   },
   {
@@ -52,7 +52,7 @@ Sons = [
   {
     fileName: 'ACM6_hivers',
     htmlText: '<span style="color: purple;">Tout à l\'égout. Tout est dégout.</span>',
-    image: '/images_vl/sud_ouest.jpg',
+    image: '/images_vl/sud-ouest.jpg',
     goodDirection: 'sud-ouest',
   },
   {
@@ -64,7 +64,7 @@ Sons = [
   {
     fileName: 'ACM7_passage',
     htmlText: '<span style="color: grey;">Molière force le passage... épaules trop larges !</span>',
-    image: '/images_vl/nord_ouest.jpg',
+    image: '/images_vl/nord-ouest.jpg',
     goodDirection: 'nord-ouest',
   },
   {
@@ -76,7 +76,7 @@ Sons = [
   {
     fileName: 'ACM3_ciel',
     htmlText: '<span style="color: orange;">Safran dans le nez ; comment éternuer ?</span>',
-    image: '/images_vl/nord_est.jpg',
+    image: '/images_vl/nord-est.jpg',
     goodDirection: 'nord-est',
   },
 ];

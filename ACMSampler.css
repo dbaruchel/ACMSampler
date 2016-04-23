@@ -22,6 +22,46 @@ body {
   pointer-events: none;
 }
 
+.background-img {
+  width:100vw;
+  height:100vh;
+  object-fit:cover;
+  z-index: -1;
+  position: absolute;
+}
+
+#final-message-container {
+  text-align: center;
+  padding-top:30vh;
+  
+}
+#final-message {
+  padding: 2rem;
+  color:white;
+  display: inline-block;
+  background-color: rgba(0,0,0,0.8);
+}
+
+.enigma-container {
+  display: inline-block;
+  text-align: center;
+  padding: 2rem;
+  background-color: rgba(0,0,0,0.5);
+  color:white;
+}
+
+.you-won-container {
+  text-align: center;
+  padding-top:30vh;
+  
+}
+.you-won {
+  padding: 2rem;
+  color:white;
+  display: inline-block;
+  background-color: rgba(0,0,0,0.5);
+}
+
 .overlay.lightOn {
   display: none;
 }
